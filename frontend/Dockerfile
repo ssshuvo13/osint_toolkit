@@ -1,7 +1,8 @@
-FROM node:18-alpine as build
+FROM node:18-alpine AS build
 WORKDIR /app
+ENV DISABLE_ESLINT_PLUGIN=true
 COPY package*.json ./
-RUN npm install
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 COPY . .
 RUN npm run build
 
