@@ -6,16 +6,24 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: backend
+    restart: unless-stopped
+    environment:
+      # Allow requests forwarded by nginx with your public domain as Host header.
+      # To lock it down, replace "*" with your domain, e.g. '["osint.example.com","localhost","127.0.0.1"]'
+      API_TRUSTED_HOSTS: '["*"]'
     volumes:
       - ./data:/backend/data
 
   frontend:
     networks:
-        - otk-network
+      - otk-network
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
     ports:
       - "4000:80"
 
